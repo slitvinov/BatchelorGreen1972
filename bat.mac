@@ -35,10 +35,12 @@ deq: ev(deq, diff);
 deq: solve(deq, 'diff(phi(r), r))[1];
 deq: ev(deq, nouns);
 
-/* initial position of the second sphre */
+/* initial position of the second sphere relatvie to the center of the
+first sphere */
 x0: 2.50;
 y0: 0.01;
-deq_rhs: subst(phi, phi(r), rhs(deq));
+dphi_dr: subst(phi, phi(r),
+  rhs(deq));
 
 load(rkf45)$
 
@@ -50,11 +52,12 @@ xy_to_rphi(x0, y0):= block([sol: solve([
   [abs(float(assoc('r, sol))), float(acos(assoc('c, sol)))]);
 [r0, phi0]: xy_to_rphi(x0, y0);
 
-/* solve numericaly */
-res: rkf45(1/deq_rhs, r, r0, float([phi, phi0, %pi/2]), 'absolute_tolerance=1e-6)$
+/* solve numericaly and equation diff(r, phi) = [....] */
+dr_dphi: 1/dphi_dr;
+res: rkf45(dr_dphi, r, r0, float([phi, phi0, %pi/2]), 'absolute_tolerance=1e-6)$
 
-x_num1: map(lambda([p], p[2]*cos(p[1])), res)$
-y_num1: map(lambda([p], p[2]*sin(p[1])), res)$
+/* transfrom from (r, phi) to (x, y) */
+xy: map(lambda([p], [p[2]*cos(p[1]), p[2]*sin(p[1])]), res)$
 
 
 /*
@@ -64,4 +67,4 @@ plot2d([[discrete, x_num1, y_num1]], [x, 0, 5], [y, 0, 3.2], [style, points]);
 */
 
 foutput: printf(false, "sphere_trajectory_x0_~6,2e_y0_~6,2e.dat", x0, y0);
-write_data(transpose(matrix(x_num1, y_num1)), foutput);
+write_data(xy, foutput);
