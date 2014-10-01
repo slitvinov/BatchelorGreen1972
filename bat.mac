@@ -3,20 +3,25 @@ rab: rest(read_nested_list("table1fixed.dat"))$
 
 /* We can use on of three versions of A(r) and B(r) functions */
 
-/* (I) equation (3.6) */
-/* A(r):= 5/2*(a^3+b^3)/r^3 - 
-(3/2*(a^5+b^5) + 5/2*a^2*b^2*(a+b))/r^5 +
-25*a^3*b^3/r^6;
-B(r):= (a^5 + b^5 + 5/3*a^2*b^2*(a+b))/r^5; */
-
-/* (II) splite interpalation from Table 1 */
-load(interpol)$
-A(x):= ''(cspline( map(lambda([p], [p[1], p[2]]), rab) ));
-B(x):= ''(cspline( map(lambda([p], [p[1], p[3]]), rab) ));
-
+approximation_type: 2;
+if approximation_type=1 then (
+  /* (I) equation (3.6) */
+  a: 1,
+  b: 1,
+  A(r):= 5/2*(a^3+b^3)/r^3 - 
+  (3/2*(a^5+b^5) + 5/2*a^2*b^2*(a+b))/r^5 +
+  25*a^3*b^3/r^6,
+  B(r):= (a^5 + b^5 + 5/3*a^2*b^2*(a+b))/r^5)
+else if approximation_type=2 then (
+  /* (II) splite interpalation from Table 1 */
+  load(interpol),
+  define(A(x), cspline( map(lambda([p], [p[1], p[2]]), rab))),
+  define(B(x), cspline( map(lambda([p], [p[1], p[3]]), rab))))
+else (
 /* (III) assimptotic exapnsion in equation (5.7) adn (5.17) */
-/* A(r):=block([xi: (r-2*a)/a], 1 - 4.077*xi);
-B(r):=block([xi: (r-2*a)/a], 0.4060 - 0.78/log(1/xi)); */
+  a : 1,
+  A(r):=block([xi: (r-2*a)/a], 1 - 4.077*xi),
+  B(r):=block([xi: (r-2*a)/a], 0.4060 - 0.78/log(1/xi)));
 
 theta: %pi/2;
 r1(r, phi):=''(r*sin(theta)*cos(phi));
@@ -66,5 +71,8 @@ plot2d([[discrete, x_num1, y_num1]], [x, 0, 5], [y, 0, 3.2], [style, points]);
 
 */
 
-foutput: printf(false, "sphere_trajectory_x0_~6,2e_y0_~6,2e.dat", x0, y0);
+foutput: printf(false,
+  "sphere_trajector_atype~dx0_~6,2e_y0_~6,2e.dat", approximation_type,
+  x0, y0);
+
 write_data(xy, foutput);

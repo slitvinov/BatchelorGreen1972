@@ -6,7 +6,7 @@ maxima -b bat.mac
 Output is in =matrix1.0=. To plot in [[gnuplot.info][gnuplot]]. It should be the same as
 in Figure 4.
 #+BEGIN_SRC gnuplt
-plot [0:5][0:3.25] "sphere_trajectory_x0_2.50e+0_y0_1.00e-2.dat"
+plot [0:5][0:3.25] "sphere_trajector_atype2x0_2.50e+0_y0_1.00e-2.dat"
 #+END_SRC
 
 * References
