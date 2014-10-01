@@ -1,0 +1,74 @@
+kill(all);
+
+/* read Table 1 */
+rab: read_nested_list("table1fixed.dat")$
+
+/* eq. (6.7) and eq. (6.8) */
+eq67: r3/R3 = exp( 'integrate((A(r)-B(r))/(1-A(r))*1/r, r, r, +inf));
+eq68: r2^2 = r3^2/R3^2*(R2^2 + 'integrate(B(r)/(1-A(r))*R3^2/r3(r)^2, r, r, +inf));
+
+/* We can use on of three versions of A(r) and B(r) functions
+(uncomment to use) */
+
+/* (I) equation (3.6) */
+/* A(r):= 5/2*(a^3+b^3)/r^3 - 
+(3/2*(a^5+b^5) + 5/2*a^2*b^2*(a+b))/r^5 +
+25*a^3*b^3/r^6;
+B(r):= (a^5 + b^5 + 5/3*a^2*b^2*(a+b))/r^5; */
+
+/* (II) splite interpalation from Table 1 */
+load(interpol)$
+A(x):= ''(cspline( map(lambda([p], [p[1], p[2]]), rab) ));
+B(x):= ''(cspline( map(lambda([p], [p[1], p[3]]), rab) ));
+
+/* (III) assimptotic exapnsion in equation (5.7) adn (5.17) */
+/* A(r):=block([xi: (r-2*a)/a], 1 - 4.077*xi);
+B(r):=block([xi: (r-2*a)/a], 0.4060 - 0.78/log(1/xi)); */
+
+theta: %pi/2;
+r1(r, phi):=''(r*sin(theta)*cos(phi));
+r2(r, phi):=''(r*sin(theta)*sin(phi));
+r3(r, phi):=''(r*cos(theta));
+
+depends([r1, r2], r);
+deq: diff(r2^2/r3^2, r) = -'B(r)/(1-'A(r))*r/r3^2;
+deq: deq*r3^2;
+
+deq: subst(r2(r, phi(r)), r2, deq);
+deq: ev(deq, diff);
+deq: solve(deq, 'diff(phi(r), r))[1];
+load ("opsubst")$
+deq: ev(deq, nouns);
+
+x0: 3.00;
+y0: 0.01;
+dx: 0.00;
+b0: 1.0;
+deq_rhs: subst(phi, phi(r), rhs(deq));
+
+load(rkf45)$
+
+sol: solve([
+  r*c = x0,
+  r*s = y0,
+  c^2 + s^2 = 1], [c, s, r])[1];
+phi0: float(acos(assoc('c, sol)));
+r0  : abs(float(assoc('r, sol)));
+res_1: rkf45(1/deq_rhs, r, r0, float([phi, phi0, %pi/2]), 'absolute_tolerance=1e-6)$
+res_2: rkf45(1/deq_rhs, r, r0, float([phi, phi0, %pi/40]), 'absolute_tolerance=1e-6)$
+rmin: last(res_1)[2];
+/* res_2: rkf45(deq_rhs,   phi, phi0, float([r, r0, rmin]), 'absolute_tolerance=1e-6)$  */
+
+res: append(res_1, res_2)$
+x_num1: map(lambda([p], p[2]*cos(p[1])), res)$
+y_num1: map(lambda([p], p[2]*sin(p[1])), res)$
+
+
+/*
+
+plot2d([[discrete, x_num1, y_num1]], [x, 0, 5], [y, 0, 3.2], [style, points]);
+
+*/
+
+foutput: printf(false, "matrix~f", b0);
+write_data(transpose(matrix(x_num1, y_num1)), foutput);
