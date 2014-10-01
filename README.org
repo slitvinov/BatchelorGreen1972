@@ -1,0 +1,18 @@
+Getting solutions from [1] in maxima. To run
+#+BEGIN_EXAMPLE
+maxima -b bat.mac
+#+END_EXAMPLE
+
+Output is in =matrix1.0=. To plot in [[gnuplot.info][gnuplot]]
+#+BEGIN_SRC emacs-lisp
+plot "matrix1.0"
+#+END_SRC
+
+* References
+
+[1] Batchelor, G. K., and J-T_ Green. "The hydrodynamic interaction of
+two small freely-moving spheres in a linear flow field." Journal of
+Fluid Mechanics 56.02 (1972): 375-400.
+
+
+
