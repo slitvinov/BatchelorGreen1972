@@ -5,7 +5,7 @@ maxima -b bat.mac
 
 Output is in =matrix1.0=. To plot in [[gnuplot.info][gnuplot]]. It should be the same as
 in Figure 4.
-#+BEGIN_SRC gnuplot :file fig4.svg
+#+BEGIN_SRC gnuplot :file fig4.png
 reset
 set style data l
 plot [:5][:3.5] \
