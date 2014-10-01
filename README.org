@@ -15,7 +15,7 @@ plot [:5][:3.5] \
 #+END_SRC
 
 #+RESULTS:
-[[file:fig4.svg]]
+[[file:fig4.png]]
 
 * References
 
