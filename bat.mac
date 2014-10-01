@@ -1,6 +1,3 @@
-/* read Table 1, skip a first line */
-rab: rest(read_nested_list("table1fixed.dat"))$
-
 /* We can use on of three versions of A(r) and B(r) functions */
 
 approximation_type: 2;
@@ -15,6 +12,8 @@ if approximation_type=1 then (
 else if approximation_type=2 then (
   /* (II) splite interpalation from Table 1 */
   load(interpol),
+  /* read Table 1, skip a first line */
+  rab: rest(read_nested_list("table1fixed.dat")),
   define(A(x), cspline( map(lambda([p], [p[1], p[2]]), rab))),
   define(B(x), cspline( map(lambda([p], [p[1], p[3]]), rab))))
 else (
