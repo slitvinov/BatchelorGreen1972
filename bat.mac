@@ -41,14 +41,14 @@ deq: expand(deq*r3^2);
 deq: ratsubst(('B(r)-'A(r))/(1-'A(r))*1/r,  'diff(r3,r,1)/r3,  deq);
 
 deq: subst([r2=r2(r, phi(r)), r3=r3(r, phi(r))], deq);
-deq: ev(deq, diff);
-deq: solve(deq, 'diff(phi(r), r))[1];
-deq: ev(deq, nouns, theta=%pi/2);
+deq: ev(deq, diff)$
+deq: solve(deq, 'diff(phi(r), r))[1]$
+deq: ev(deq, nouns, theta=%pi/2)$
 
 /* initial position of the second sphere relatvie to the center of the
 first sphere */
 /* [x0, y0]: [2.47435897436, 0.0366577866578]; */
-[x0, y0]: [4.67307692308,  0.0137085137085];
+[x0, y0]: [4.67307692308,  0.0137085137085]$
 
 dphi_dr: subst(phi, phi(r),
   rhs(deq))$
@@ -65,7 +65,6 @@ xy_to_rphi(x0, y0):= block([sol: solve([
 
 /* solve numericaly and equation diff(r, phi) = [....] */
 dr_dphi: 1/dphi_dr$
-dr_dphi: ev(dr_dphi, A, B)$
 res: rkf45(dr_dphi, r, r0, float([phi, phi0, %pi/2]), 'absolute_tolerance=1e-8)$
 
 /* transfrom from (r, phi) to (x, y) */
