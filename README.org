@@ -4,7 +4,7 @@ maxima -b bat.mac
 #+END_EXAMPLE
 
 Output goes to files =sphere_trajector_atype*=. To plot in [[gnuplot.info][gnuplot]]. It
-should be the same as in Figure 4.
+should be the same as in Figure\nbsp4.
 #+BEGIN_SRC gnuplot :file fig4.png
 reset
 set style data l
