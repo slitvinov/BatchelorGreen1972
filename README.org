@@ -5,9 +5,17 @@ maxima -b bat.mac
 
 Output is in =matrix1.0=. To plot in [[gnuplot.info][gnuplot]]. It should be the same as
 in Figure 4.
-#+BEGIN_SRC gnuplt
-plot [0:5][0:3.25] "sphere_trajector_atype2x0_2.50e+0_y0_1.00e-2.dat"
+#+BEGIN_SRC gnuplot :file fig4.svg
+reset
+set style data l
+plot [:5][:3.5] \
+     "digital/0.123.dat" t "R2/a =   -0.123", "digital/0.0168.dat" t "R2/a = -0.0168", \
+     "sphere_trajector_atype2x0_4.67E+0_y0_1.37E-2.dat" t "maxima", \
+     "sphere_trajector_atype2x0_2.47E+0_y0_3.66E-2.dat" t "maxima"
 #+END_SRC
+
+#+RESULTS:
+[[file:fig4.svg]]
 
 * References
 

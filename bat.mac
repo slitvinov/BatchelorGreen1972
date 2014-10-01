@@ -47,8 +47,9 @@ deq: ev(deq, nouns, theta=%pi/2);
 
 /* initial position of the second sphere relatvie to the center of the
 first sphere */
-x0: 2.40;
-y0: 0.01;
+/* [x0, y0]: [2.47435897436, 0.0366577866578]; */
+[x0, y0]: [4.67307692308,  0.0137085137085];
+
 dphi_dr: subst(phi, phi(r),
   rhs(deq))$
 
@@ -69,7 +70,6 @@ res: rkf45(dr_dphi, r, r0, float([phi, phi0, %pi/2]), 'absolute_tolerance=1e-8)$
 
 /* transfrom from (r, phi) to (x, y) */
 xy: map(lambda([p], [p[2]*cos(p[1]), p[2]*sin(p[1])]), res)$
-
 
 /*
 
