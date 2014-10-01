@@ -1,7 +1,8 @@
-/* We can use on of three versions of A(r) and B(r) functions */
-ratprint: false;
+ratprint: false$
 
+/* We can use on of three versions of A(r) and B(r) functions */
 approximation_type: 2;
+
 if approximation_type=1 then (
   /* (I) equation (3.6) */
   a: 1,
@@ -47,7 +48,8 @@ deq: ev(deq, nouns, theta=%pi/2)$
 /* initial position of the second sphere relatvie to the center of the
 first sphere */
 /* [x0, y0]: [2.47435897436, 0.0366577866578]; */
-[x0, y0]: [4.67307692308,  0.0137085137085]$
+/* [x0, y0]: [4.67307692308,  0.0137085137085]$ */
+[x0, y0]: [2.5,  0.25]$
 
 dphi_dr: subst(phi, phi(r),
   rhs(deq))$
@@ -63,11 +65,20 @@ xy_to_rphi(x0, y0):= block([sol: solve([
 [r0, phi0]: xy_to_rphi(x0, y0);
 
 /* solve numericaly and equation diff(r, phi) = [....] */
-dr_dphi: 1/dphi_dr$
-res: rkf45(dr_dphi, r, r0, float([phi, phi0, %pi/2]), 'absolute_tolerance=1e-8)$
 
-/* transfrom from (r, phi) to (x, y) */
-xy: map(lambda([p], [p[2]*cos(p[1]), p[2]*sin(p[1])]), res)$
+/* (I) we solve for [phi0, %pi/2] */
+dr_dphi: 1/dphi_dr$
+res_1: rkf45(dr_dphi, r, r0,     float([phi,     phi0, %pi/2]), 'absolute_tolerance=1e-8)$
+
+/* (II) we take -rhs and set neg_phi = -phi and solve for [0, phi0] */
+dr_dphi_neg: subst(phi=-neg_phi, dr_dphi)$
+res_2: rkf45(-dr_dphi_neg, r, r0,  float([neg_phi, -phi0, 0]), 'absolute_tolerance=1e-8)$
+res_2: maplist( lambda([p], [-p[1], p[2]]), res_2)$
+
+/* combine solutians and transfrom from (r, phi) to (x, y) */
+xy: map(lambda([p], [p[2]*cos(p[1]), p[2]*sin(p[1])]), append(res_1, res_2))$
+/* sort with respect to the first argument */
+xy: sort(xy, lambda([a, b], local(a, b), orderlessp(a[1], b[1])))$
 
 /*
 

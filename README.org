@@ -17,6 +17,17 @@ plot [:5][:3.5] \
 #+RESULTS:
 [[file:fig4.png]]
 
+#+BEGIN_SRC gnuplot :file fig5.png
+reset
+set style data l
+plot [:5][:3.5] \
+     sqrt(2**2 - x**2) t "", \
+     "sphere_trajector_atype2x0_2.50e+0_y0_2.50e-1.dat" w lp t "[x, y]: [2.5,  0.25]"
+#+END_SRC
+
+#+RESULTS:
+[[file:fig5.png]]
+
 * References
 
 [1] Batchelor, G. K., and J-T_ Green. "The hydrodynamic interaction of
