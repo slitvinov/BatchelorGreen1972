@@ -3,9 +3,10 @@ Getting solutions from [1] in maxima. To run
 maxima -b bat.mac
 #+END_EXAMPLE
 
-Output is in =matrix1.0=. To plot in [[gnuplot.info][gnuplot]]
-#+BEGIN_SRC emacs-lisp
-plot "matrix1.0"
+Output is in =matrix1.0=. To plot in [[gnuplot.info][gnuplot]]. It should be the same as
+in Figure 4.
+#+BEGIN_SRC gnuplt
+plot [0:5][0:3.25] "sphere_trajectory_x0_2.50e+0_y0_1.00e-2.dat"
 #+END_SRC
 
 * References

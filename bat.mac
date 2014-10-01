@@ -1,14 +1,7 @@
-kill(all);
+/* read Table 1, skip a first line */
+rab: rest(read_nested_list("table1fixed.dat"))$
 
-/* read Table 1 */
-rab: read_nested_list("table1fixed.dat")$
-
-/* eq. (6.7) and eq. (6.8) */
-eq67: r3/R3 = exp( 'integrate((A(r)-B(r))/(1-A(r))*1/r, r, r, +inf));
-eq68: r2^2 = r3^2/R3^2*(R2^2 + 'integrate(B(r)/(1-A(r))*R3^2/r3(r)^2, r, r, +inf));
-
-/* We can use on of three versions of A(r) and B(r) functions
-(uncomment to use) */
+/* We can use on of three versions of A(r) and B(r) functions */
 
 /* (I) equation (3.6) */
 /* A(r):= 5/2*(a^3+b^3)/r^3 - 
@@ -40,10 +33,9 @@ deq: solve(deq, 'diff(phi(r), r))[1];
 load ("opsubst")$
 deq: ev(deq, nouns);
 
-x0: 3.00;
+/* initial position of the second sphre */
+x0: 2.50;
 y0: 0.01;
-dx: 0.00;
-b0: 1.0;
 deq_rhs: subst(phi, phi(r), rhs(deq));
 
 load(rkf45)$
@@ -70,5 +62,5 @@ plot2d([[discrete, x_num1, y_num1]], [x, 0, 5], [y, 0, 3.2], [style, points]);
 
 */
 
-foutput: printf(false, "matrix~f", b0);
+foutput: printf(false, "sphere_trajectory_x0_~6,2e_y0_~6,2e.dat", x0, y0);
 write_data(transpose(matrix(x_num1, y_num1)), foutput);
