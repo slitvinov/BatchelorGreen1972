@@ -33,7 +33,6 @@ deq: deq*r3^2;
 deq: subst(r2(r, phi(r)), r2, deq);
 deq: ev(deq, diff);
 deq: solve(deq, 'diff(phi(r), r))[1];
-load ("opsubst")$
 deq: ev(deq, nouns);
 
 /* initial position of the second sphre */
@@ -43,18 +42,17 @@ deq_rhs: subst(phi, phi(r), rhs(deq));
 
 load(rkf45)$
 
-sol: solve([
-  r*c = x0,
-  r*s = y0,
-  c^2 + s^2 = 1], [c, s, r])[1];
-phi0: float(acos(assoc('c, sol)));
-r0  : abs(float(assoc('r, sol)));
-res_1: rkf45(1/deq_rhs, r, r0, float([phi, phi0, %pi/2]), 'absolute_tolerance=1e-6)$
-res_2: rkf45(1/deq_rhs, r, r0, float([phi, phi0, %pi/40]), 'absolute_tolerance=1e-6)$
-rmin: last(res_1)[2];
-/* res_2: rkf45(deq_rhs,   phi, phi0, float([r, r0, rmin]), 'absolute_tolerance=1e-6)$  */
+/* transfrom (x0, y0) to (r0, phi0) */
+xy_to_rphi(x0, y0):= block([sol: solve([
+    'r*'c = x0,
+    'r*'s = y0,
+    'c^2 + 's^2 = 1], ['c, 's, 'r])[1]],
+  [abs(float(assoc('r, sol))), float(acos(assoc('c, sol)))]);
+[r0, phi0]: xy_to_rphi(x0, y0);
 
-res: append(res_1, res_2)$
+/* solve numericaly */
+res: rkf45(1/deq_rhs, r, r0, float([phi, phi0, %pi/2]), 'absolute_tolerance=1e-6)$
+
 x_num1: map(lambda([p], p[2]*cos(p[1])), res)$
 y_num1: map(lambda([p], p[2]*sin(p[1])), res)$
 
